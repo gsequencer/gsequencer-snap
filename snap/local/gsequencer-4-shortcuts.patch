@@ -1,0 +1,93 @@
+--- ags/app/machine/ags_drum_callbacks.c.orig	2022-09-18 23:18:12.575392175 +0200
++++ ags/app/machine/ags_drum_callbacks.c	2022-09-18 23:21:38.944769567 +0200
+@@ -44,6 +44,8 @@
+   AgsPCMFileChooserDialog *pcm_file_chooser_dialog;
+ 
+   GFile *file;
++
++  gchar *path;
+   
+   GError *error;
+   
+@@ -55,7 +57,9 @@
+ 							    (GtkWindow *) gtk_widget_get_ancestor((GtkWidget *) drum,
+ 												  AGS_TYPE_WINDOW));
+ 
+-  file = g_file_new_for_path("/usr/share/hydrogen/data/drumkits");
++  path = g_strdup_printf("%s/usr/share/hydrogen/data/drumkits", getenv("AGS_SNAP_PATH"));
++
++  file = g_file_new_for_path(path);
+ 
+   error = NULL;
+   gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(pcm_file_chooser_dialog->file_chooser),
+@@ -82,6 +86,8 @@
+ 		   G_CALLBACK(ags_drum_open_response_callback), drum);
+   g_signal_connect(G_OBJECT(pcm_file_chooser_dialog), "response",
+ 		   G_CALLBACK(ags_machine_open_response_callback), drum);
++
++  g_free(path);
+ }
+ 
+ void
+--- ags/app/machine/ags_drum_input_pad_callbacks.c.orig	2022-09-18 23:18:18.331431491 +0200
++++ ags/app/machine/ags_drum_input_pad_callbacks.c	2022-09-18 23:24:46.709977413 +0200
+@@ -41,6 +41,8 @@
+   AgsPCMFileChooserDialog *pcm_file_chooser_dialog;
+ 
+   GFile *file;
++
++  gchar *path;
+   
+   GError *error;
+ 
+@@ -52,7 +54,9 @@
+ 							    (GtkWindow *) gtk_widget_get_ancestor((GtkWidget *) drum_input_pad,
+ 												  AGS_TYPE_WINDOW));
+ 
+-  file = g_file_new_for_path("/usr/share/hydrogen/data/drumkits");
++  path = g_strdup_printf("%s/usr/share/hydrogen/data/drumkits", getenv("AGS_SNAP_PATH"));
++
++  file = g_file_new_for_path(path);
+ 
+   error = NULL;
+   gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(pcm_file_chooser_dialog->file_chooser),
+@@ -78,6 +82,8 @@
+ 
+   g_signal_connect((GObject *) pcm_file_chooser_dialog, "response",
+ 		   G_CALLBACK(ags_drum_input_pad_open_response_callback), (gpointer) drum_input_pad);
++
++  g_free(path);
+ }
+ 
+ void
+--- ags/app/machine/ags_ffplayer_callbacks.c.orig	2022-09-18 23:17:47.347219114 +0200
++++ ags/app/machine/ags_ffplayer_callbacks.c	2022-09-18 23:20:36.008355963 +0200
+@@ -226,6 +226,8 @@
+ 
+   GFile *file;
+ 
++  gchar *path;
++  
+   file_chooser = gtk_file_chooser_dialog_new(i18n("Open Soundfont2 file"),
+ 					     gtk_widget_get_ancestor(ffplayer,
+ 								     AGS_TYPE_WINDOW),
+@@ -236,7 +238,9 @@
+   gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(file_chooser),
+ 				       FALSE);
+ 
+-  file = g_file_new_for_path("/usr/share/sounds/sf2");
++  path = g_strdup_printf("%s/usr/share/sounds/sf2", getenv("AGS_SNAP_PATH"));
++  
++  file = g_file_new_for_path(path);
+   gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(file_chooser),
+ 				       file,
+ 				       NULL);
+@@ -247,6 +251,8 @@
+ 		   G_CALLBACK(ags_ffplayer_open_dialog_response_callback), AGS_MACHINE(ffplayer));
+ 
+   gtk_widget_show((GtkWidget *) file_chooser);
++
++  g_free(path);
+ }
+ 
+ void
